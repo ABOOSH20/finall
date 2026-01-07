@@ -1,50 +1,48 @@
 import BookingForm from "./BookingForm";
 
-function BookingPage({
-  availableTimes,
-  dispatch,
-  bookingData,
-  submitForm,
-}) {
+function BookingPage({ availableTimes, submitForm, bookingData }) {
   return (
-    <section>
-      <h1>Reserve a Table</h1>
+    <main>
+      <section aria-labelledby="booking-heading">
+        <h1 id="booking-heading">Reserve a Table</h1>
 
-      <BookingForm
-        availableTimes={availableTimes}
-        dispatch={dispatch}
-        submitForm={submitForm}
-      />
+        <BookingForm
+          availableTimes={availableTimes}
+          submitForm={submitForm}
+        />
+      </section>
 
-      <h2>Existing Reservations</h2>
+      <section aria-labelledby="reservations-heading">
+        <h2 id="reservations-heading">Existing Reservations</h2>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Guests</th>
-            <th>Occasion</th>
-          </tr>
-        </thead>
-        <tbody>
-          {!bookingData || bookingData.length === 0 ? (
+        <table aria-label="On Click" border="1">
+          <thead>
             <tr>
-              <td colSpan="4">No reservations yet</td>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Guests</th>
+              <th>Occasion</th>
             </tr>
-          ) : (
-            bookingData.map((booking, index) => (
-              <tr key={index}>
-                <td>{booking.date}</td>
-                <td>{booking.time}</td>
-                <td>{booking.guests}</td>
-                <td>{booking.occasion}</td>
+          </thead>
+          <tbody>
+            {bookingData.length === 0 ? (
+              <tr>
+                <td colSpan="4">No reservations yet</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </section>
+            ) : (
+              bookingData.map((booking, index) => (
+                <tr key={index}>
+                  <td>{booking.date}</td>
+                  <td>{booking.time}</td>
+                  <td>{booking.guests}</td>
+                  <td>{booking.occasion}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </section>
+    </main>
   );
 }
 

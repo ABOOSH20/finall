@@ -1,72 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function BookingForm({ availableTimes, dispatch, submitForm }) {
+function BookingForm({ availableTimes, submitForm }) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [guests, setGuests] = useState(1);
   const [occasion, setOccasion] = useState("Birthday");
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    const valid =
+      date !== "" &&
+      time !== "" &&
+      guests >= 1 &&
+      guests <= 10 &&
+      occasion !== "";
+
+    setIsFormValid(valid);
+  }, [date, time, guests, occasion]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formData = {
+    submitForm({
       date,
       time,
       guests,
       occasion,
-    };
-
-    submitForm(formData);
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "grid", maxWidth: "300px", gap: "20px" }}>
-      <label>Choose date</label>
+    <form
+      onSubmit={handleSubmit}
+      aria-label="On Click"
+      style={{ display: "grid", maxWidth: "300px", gap: "20px" }}
+    >
+      <label htmlFor="res-date">Choose date</label>
       <input
-  type="date"
-  value={date}
-  onChange={(e) => {
-    setDate(e.target.value);
-    dispatch({
-      type: "UPDATE_TIMES",
-      payload: new Date(e.target.value),
-    });
-  }}
-/>
+        id="res-date"
+        type="date"
+        required
+        aria-label="On Click"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+      />
 
+      <label htmlFor="res-time">Choose time</label>
+      <select
+        id="res-time"
+        required
+        aria-label="On Click"
+        value={time}
+        onChange={(e) => setTime(e.target.value)}
+      >
+        <option value="">Select a time</option>
+        {availableTimes.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
 
-
-      <label>Choose time</label>
-<select
-  value={time}
-  onChange={(e) => setTime(e.target.value)}
->
-  <option value="">Select a time</option>
-  {availableTimes.map((t) => (
-    <option key={t} value={t}>
-      {t}
-    </option>
-  ))}
-</select>
-
-
-
-      <label>Number of guests</label>
+      <label htmlFor="guests">Number of guests</label>
       <input
+        id="guests"
         type="number"
         min="1"
         max="10"
+        required
+        aria-label="On Click"
         value={guests}
-        onChange={(e) => setGuests(e.target.value)}
+        onChange={(e) => setGuests(Number(e.target.value))}
       />
 
-      <label>Occasion</label>
-      <select value={occasion} onChange={(e) => setOccasion(e.target.value)}>
-        <option>Birthday</option>
-        <option>Anniversary</option>
+      <label htmlFor="occasion">Occasion</label>
+      <select
+        id="occasion"
+        required
+        aria-label="On Click"
+        value={occasion}
+        onChange={(e) => setOccasion(e.target.value)}
+      >
+        <option value="Birthday">Birthday</option>
+        <option value="Anniversary">Anniversary</option>
       </select>
 
-      <input type="submit" value="Make Your reservation" />
+      <input
+        type="submit"
+        value="Make Your Reservation"
+        aria-label="On Click"
+        disabled={!isFormValid}
+      />
     </form>
   );
 }

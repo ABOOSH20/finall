@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function BookingForm({ availableTimes, dispatch }) {
+function BookingForm({ availableTimes, dispatch, submitForm }) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [guests, setGuests] = useState(1);
@@ -9,35 +9,47 @@ function BookingForm({ availableTimes, dispatch }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch({
-      type: "BOOK_TIME",
-      payload: time,
-    });
+    const formData = {
+      date,
+      time,
+      guests,
+      occasion,
+    };
 
-    console.log({ date, time, guests, occasion });
+    submitForm(formData);
   };
 
   return (
-    <form style={{ display: "grid", maxWidth: "200px", gap: "20px" }}>
-      <label htmlFor="res-date">Choose date</label>
+    <form onSubmit={handleSubmit} style={{ display: "grid", maxWidth: "300px", gap: "20px" }}>
+      <label>Choose date</label>
       <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
+  type="date"
+  value={date}
+  onChange={(e) => {
+    setDate(e.target.value);
+    dispatch({
+      type: "UPDATE_TIMES",
+      payload: new Date(e.target.value),
+    });
+  }}
+/>
 
-      <label htmlFor="res-time">Choose time</label>
-      <select
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
-      >
-        <option value="">Select a time</option>
-        {availableTimes.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
-        ))}
-      </select>
+
+
+      <label>Choose time</label>
+<select
+  value={time}
+  onChange={(e) => setTime(e.target.value)}
+>
+  <option value="">Select a time</option>
+  {availableTimes.map((t) => (
+    <option key={t} value={t}>
+      {t}
+    </option>
+  ))}
+</select>
+
+
 
       <label>Number of guests</label>
       <input
@@ -49,10 +61,7 @@ function BookingForm({ availableTimes, dispatch }) {
       />
 
       <label>Occasion</label>
-      <select
-        value={occasion}
-        onChange={(e) => setOccasion(e.target.value)}
-      >
+      <select value={occasion} onChange={(e) => setOccasion(e.target.value)}>
         <option>Birthday</option>
         <option>Anniversary</option>
       </select>
